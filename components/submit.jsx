@@ -664,12 +664,12 @@ export default function Submit() {
 
           {/* Navigation Buttons */}
           {currentStep < 4 && (
-            <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all ${
                   currentStep === 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -682,7 +682,7 @@ export default function Submit() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="bg-[#1E4E9A] hover:bg-[#163E7A] text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                  className="w-full sm:w-auto bg-[#1E4E9A] hover:bg-[#163E7A] text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   Next Step
                 </button>
@@ -690,7 +690,7 @@ export default function Submit() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#E02020] hover:bg-[#B81C1C] text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="w-full sm:w-auto bg-[#E02020] hover:bg-[#B81C1C] text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
