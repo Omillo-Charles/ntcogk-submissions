@@ -94,13 +94,13 @@ link[rel="icon"] {
 
 /* Event Registration Specific Styles */
 .btn-primary {
-  background: linear-gradient(to right, var(--primary-red), var(--primary-blue));
+  background: var(--primary-red);
   color: white;
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(to right, var(--dark-red), var(--dark-blue));
+  background: var(--dark-red);
   transform: scale(1.02);
 }
 

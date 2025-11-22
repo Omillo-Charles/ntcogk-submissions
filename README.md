@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NTCG Kenya - Submissions Handler
 
-## Getting Started
+Secure document submission portal for NTCG Kenya churches and members.
 
-First, run the development server:
+## Features
+
+- 3-step submission process (User Details → Church Details → Submission)
+- File upload with drag & drop support
+- Multiple file handling (PDF, DOC, DOCX, XLS, XLSX, JPG, PNG)
+- Church selection by region
+- Urgency level selection
+- Real-time form validation
+- Responsive design for mobile and desktop
+
+## Setup
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_SUBMISSIONS_API_URL=http://localhost:5501/api/submissions
+```
+
+For production:
+```env
+NEXT_PUBLIC_SUBMISSIONS_API_URL=https://api.ntcogk.org/api/submissions
+```
+
+### 3. Start Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3002`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 4. Start Backend API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Make sure the submissions backend is running:
 
-## Learn More
+```bash
+cd ../New-Testament-Backend/submissions
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+The API will be available at `http://localhost:5501`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+submissions-handler/
+├── app/
+│   ├── globals.css          # Global styles with NTCG branding
+│   ├── layout.js            # Root layout with SEO and metadata
+│   └── page.js              # Home page with hero and submit component
+├── components/
+│   ├── churches.jsx         # Church data by region
+│   ├── footer.jsx           # Footer component
+│   ├── navbar.jsx           # Navigation bar
+│   └── submit.jsx           # Main submission form component
+└── public/
+    ├── fonts/               # Custom fonts
+    ├── icons/               # Favicon and icons
+    └── mainLogo.png         # NTCG Kenya logo
+```
 
-## Deploy on Vercel
+## API Integration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The submission form connects to the backend API at:
+- **Endpoint**: `POST /api/submissions`
+- **Content-Type**: `multipart/form-data`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Request Format
+
+```javascript
+FormData {
+  fullName: string,
+  email: string,
+  phone: string,
+  position: string,
+  branch: string,
+  region: string,
+  submissionType: string,
+  urgency: string,
+  description: string,
+  subject: string,
+  files: File[]
+}
+```
+
+### Response Format
+
+```json
+{
+  "success": true,
+  "message": "Submission created successfully",
+  "data": {
+    "submissionId": "SUB-20241122-XXXX",
+    "submission": { ... }
+  }
+}
+```
+
+## Deployment
+
+### Vercel Deployment
+
+1. Push code to GitHub
+2. Import project in Vercel
+3. Set environment variables:
+   - `NEXT_PUBLIC_SUBMISSIONS_API_URL`
+4. Deploy
+
+### Custom Domain Setup
+
+Configure DNS records for `submissions.ntcogk.org`:
+- Type: CNAME
+- Name: submissions
+- Value: cname.vercel-dns.com
+
+## Support
+
+For issues or questions, contact:
+- Email: info@ntcogk.org
+- Phone: +254 759 120 222

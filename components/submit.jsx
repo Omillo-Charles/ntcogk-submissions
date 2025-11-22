@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getRegionsWithChurches, getChurchesByRegion } from "./churches";
+import { getRegionsWithChurches, getChurchesByRegion, getRegionDisplay } from "./churches";
 
 export default function Submit() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -145,19 +145,50 @@ export default function Submit() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
     try {
-      // Here you would send the data to your backend
-      console.log("Submitting:", formData);
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
       
-      // Simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Append user details
+      formDataToSend.append('fullName', formData.fullName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('position', formData.position);
       
-      // Show success message
-      setCurrentStep(4);
+      // Append church details
+      formDataToSend.append('branch', formData.churchName);
+      formDataToSend.append('region', formData.region);
+      
+      // Append submission details
+      formDataToSend.append('submissionType', formData.submissionType);
+      formDataToSend.append('urgency', formData.urgency);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('subject', `${formData.submissionType} - ${formData.churchName}`);
+      
+      // Append files
+      formData.files.forEach((file) => {
+        formDataToSend.append('files', file);
+      });
+
+      // Send to API
+      const apiUrl = process.env.NEXT_PUBLIC_SUBMISSIONS_API_URL || 'http://localhost:5501/api/submissions';
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Show success message
+        setCurrentStep(4);
+      } else {
+        throw new Error(data.message || 'Failed to submit');
+      }
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Failed to submit. Please try again.");
+      alert(`Failed to submit: ${error.message}. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -183,13 +214,14 @@ export default function Submit() {
   };
 
   const submissionTypes = [
-    "Financial Report",
+    "Monthly Report",
+    "Financial Statement",
     "Event Proposal",
-    "Ministry Report",
-    "Building Plans",
-    "Legal Documents",
+    "Ministry Update",
+    "Building/Property Documents",
     "Membership Records",
-    "Other",
+    "Pastoral Credentials",
+    "Other Documents",
   ];
 
   const urgencyLevels = [
@@ -341,9 +373,9 @@ export default function Submit() {
                   }`}
                 >
                   <option value="">Select region</option>
-                  {getRegionsWithChurches().map((region) => (
-                    <option key={region} value={region}>
-                      {region}
+                  {getRegionsWithChurches().map((regionKey) => (
+                    <option key={regionKey} value={regionKey}>
+                      {getRegionDisplay(regionKey)}
                     </option>
                   ))}
                 </select>
