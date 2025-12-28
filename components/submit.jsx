@@ -11,13 +11,13 @@ export default function Submit() {
     email: "",
     phone: "",
     position: "",
-    
+
     // Church Details
     churchName: "",
     churchLocation: "",
     district: "",
     region: "",
-    
+
     // Submission Details
     submissionType: "",
     urgency: "normal",
@@ -110,28 +110,28 @@ export default function Submit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate all required fields before submission
     const newErrors = {};
-    
+
     // Validate user details
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.position.trim()) newErrors.position = "Position is required";
-    
+
     // Validate church details
     if (!formData.region.trim()) newErrors.region = "Region is required";
     if (!formData.churchName.trim()) newErrors.churchName = "Church name is required";
-    
+
     // Validate submission details
     if (!formData.submissionType) newErrors.submissionType = "Submission type is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
     if (formData.files.length === 0) newErrors.files = "At least one file is required";
-    
+
     setErrors(newErrors);
-    
+
     // If there are errors, don't submit
     if (Object.keys(newErrors).length > 0) {
       // Find which step has errors and go to that step
@@ -144,36 +144,34 @@ export default function Submit() {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       // Create FormData for file upload
       const formDataToSend = new FormData();
-      
+
       // Append user details
       formDataToSend.append('fullName', formData.fullName);
       formDataToSend.append('email', formData.email);
       formDataToSend.append('phone', formData.phone);
       formDataToSend.append('position', formData.position);
-      
+
       // Append church details
       formDataToSend.append('branch', formData.churchName);
       formDataToSend.append('region', formData.region);
-      
+
       // Append submission details
       formDataToSend.append('submissionType', formData.submissionType);
       formDataToSend.append('urgency', formData.urgency);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('subject', `${formData.submissionType} - ${formData.churchName}`);
-      
+
       // Append files
       formData.files.forEach((file) => {
         formDataToSend.append('files', file);
       });
 
       // Send to API
-      const apiUrl = process.env.NEXT_PUBLIC_SUBMISSIONS_API_URL || 'http://localhost:5501/api/submissions';
-      
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/submissions', {
         method: 'POST',
         body: formDataToSend,
       });
@@ -243,11 +241,10 @@ export default function Submit() {
           ].map((step) => (
             <div key={step.num} className="flex flex-col items-center">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all mb-2 ${
-                  currentStep >= step.num
+                className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all mb-2 ${currentStep >= step.num
                     ? "bg-[#1E4E9A] text-white"
                     : "bg-gray-200 text-gray-500"
-                }`}
+                  }`}
               >
                 {step.num}
               </div>
@@ -266,7 +263,7 @@ export default function Submit() {
           {currentStep === 1 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Details</h2>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Full Name <span className="text-red-500">*</span>
@@ -276,9 +273,8 @@ export default function Submit() {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.fullName ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.fullName ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Enter your full name"
                 />
                 {errors.fullName && (
@@ -295,9 +291,8 @@ export default function Submit() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="your.email@example.com"
                 />
                 {errors.email && (
@@ -314,9 +309,8 @@ export default function Submit() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.phone ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.phone ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="+254 700 000 000"
                 />
                 {errors.phone && (
@@ -332,9 +326,8 @@ export default function Submit() {
                   name="position"
                   value={formData.position}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.position ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.position ? "border-red-500" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select your position</option>
                   <option value="Pastor">Pastor</option>
@@ -355,7 +348,7 @@ export default function Submit() {
           {currentStep === 2 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Church Details</h2>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Region <span className="text-red-500">*</span>
@@ -368,9 +361,8 @@ export default function Submit() {
                     // Reset church name when region changes
                     setFormData((prev) => ({ ...prev, churchName: "" }));
                   }}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.region ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.region ? "border-red-500" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select region</option>
                   {getRegionsWithChurches().map((regionKey) => (
@@ -399,16 +391,15 @@ export default function Submit() {
                   }}
                   onFocus={() => setShowChurchDropdown(true)}
                   disabled={!formData.region}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.churchName ? "border-red-500" : "border-gray-300"
-                  } ${!formData.region ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.churchName ? "border-red-500" : "border-gray-300"
+                    } ${!formData.region ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   placeholder={formData.region ? "Search for your church..." : "Select region first"}
                   autoComplete="off"
                 />
                 {errors.churchName && (
                   <p className="text-red-500 text-sm mt-1">{errors.churchName}</p>
                 )}
-                
+
                 {/* Church Dropdown */}
                 {showChurchDropdown && formData.region && (
                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
@@ -448,13 +439,13 @@ export default function Submit() {
                     {getChurchesByRegion(formData.region).filter((church) =>
                       church.toLowerCase().includes(churchSearchTerm.toLowerCase())
                     ).length === 0 && (
-                      <div className="px-4 py-3 text-gray-500 text-center">
-                        No churches found
-                      </div>
-                    )}
+                        <div className="px-4 py-3 text-gray-500 text-center">
+                          No churches found
+                        </div>
+                      )}
                   </div>
                 )}
-                
+
                 {/* Selected Church Display */}
                 {formData.churchName && !showChurchDropdown && (
                   <div className="mt-2 flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -494,7 +485,7 @@ export default function Submit() {
           {currentStep === 3 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Submission Details</h2>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Submission Type <span className="text-red-500">*</span>
@@ -503,9 +494,8 @@ export default function Submit() {
                   name="submissionType"
                   value={formData.submissionType}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.submissionType ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.submissionType ? "border-red-500" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select submission type</option>
                   {submissionTypes.map((type) => (
@@ -527,9 +517,8 @@ export default function Submit() {
                   name="urgency"
                   value={formData.urgency}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${
-                    errors.urgency ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.urgency ? "border-red-500" : "border-gray-300"
+                    }`}
                 >
                   {urgencyLevels.map((level) => (
                     <option key={level.value} value={level.value}>
@@ -551,9 +540,8 @@ export default function Submit() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all resize-vertical ${
-                    errors.description ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all resize-vertical ${errors.description ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Provide details about your submission..."
                 />
                 {errors.description && (
@@ -701,11 +689,10 @@ export default function Submit() {
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all ${
-                  currentStep === 1
+                className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all ${currentStep === 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
+                  }`}
               >
                 Previous
               </button>

@@ -57,15 +57,22 @@ export async function POST(request) {
         await dbConnect();
 
         const formData = await request.formData();
-        const title = formData.get('title');
-        const description = formData.get('description');
-        const submitterName = formData.get('submitterName');
-        const submitterEmail = formData.get('submitterEmail');
+
+        // Get form data - matching frontend field names
+        const fullName = formData.get('fullName');
+        const email = formData.get('email');
+        const phone = formData.get('phone');
+        const position = formData.get('position');
+        const branch = formData.get('branch');
+        const region = formData.get('region');
         const submissionType = formData.get('submissionType');
+        const urgency = formData.get('urgency');
+        const description = formData.get('description');
+        const subject = formData.get('subject');
         const files = formData.getAll('files');
 
         // Validate required fields
-        if (!title || !description || !submitterName || !submitterEmail || !submissionType) {
+        if (!fullName || !email || !phone || !position || !branch || !region || !submissionType || !description) {
             return NextResponse.json(
                 { success: false, error: 'Missing required fields' },
                 { status: 400 }
@@ -100,12 +107,18 @@ export async function POST(request) {
 
         // Create submission record
         const submission = new Submission({
-            title,
+            title: subject || `${submissionType} - ${branch}`,
             description,
-            submitterName,
-            submitterEmail,
+            submitterName: fullName,
+            submitterEmail: email,
             submissionType,
-            files: uploadedFiles
+            files: uploadedFiles,
+            // Additional fields for extended data
+            submitterPhone: phone,
+            submitterPosition: position,
+            churchBranch: branch,
+            churchRegion: region,
+            urgencyLevel: urgency
         });
 
         await submission.save();

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Webly Sleek UI';
-  src: url('/fonts/weblysleekuisb.ttf') format('truetype');
+  font-family: "Webly Sleek UI";
+  src: url("/fonts/weblysleekuisb.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10,15 +10,15 @@
 
 :root {
   /* NTCOG Kenya Brand Colors */
-  --primary-red: #E02020;
-  --primary-blue: #1E4E9A;
-  --dark-red: #B81C1C;
-  --dark-blue: #163E7A;
-  
+  --primary-red: #e02020;
+  --primary-blue: #1e4e9a;
+  --dark-red: #b81c1c;
+  --dark-blue: #163e7a;
+
   /* Background Colors */
   --background: #ffffff;
   --foreground: #171717;
-  
+
   /* Gray Scale */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
@@ -49,7 +49,85 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Webly Sleek UI', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-family: "Webly Sleek UI", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Arial, sans-serif;
+}
+
+/* Input field styles */
+input,
+select,
+textarea {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+/* Ensure form labels are visible */
+label {
+  color: #374151 !important;
+}
+
+/* Dropdown options */
+option {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
+
+/* Focus states */
+input:focus,
+select:focus,
+textarea:focus {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Additional form field overrides */
+.form-input {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
+
+.form-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+.form-input:focus {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Disabled input fields */
+input:disabled,
+select:disabled,
+textarea:disabled {
+  color: #6b7280 !important;
+  background-color: #f3f4f6 !important;
+}
+
+input:disabled::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Ensure text is visible in all states */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
+
+/* Dropdown specific styles */
+select option {
+  color: #374151 !important;
+  background-color: #ffffff !important;
 }
 
 /* Favicon styling for smooth borders */
@@ -84,12 +162,12 @@ link[rel="icon"] {
 
 /* Hide scrollbar but keep functionality */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none; /* Chrome, Safari and Opera */
 }
 
 /* Event Registration Specific Styles */
@@ -105,11 +183,13 @@ link[rel="icon"] {
 }
 
 .card-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .card-shadow:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Payment Method Cards */
