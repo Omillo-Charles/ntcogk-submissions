@@ -71,7 +71,7 @@ export async function POST(request) {
         const subject = formData.get('subject');
         const files = formData.getAll('files');
 
-        // Validate required fields
+        // Validate required fields early
         if (!fullName || !email || !phone || !position || !branch || !region || !submissionType || !description) {
             return NextResponse.json(
                 { success: false, error: 'Missing required fields' },
@@ -79,11 +79,11 @@ export async function POST(request) {
             );
         }
 
+        // Initialize Google Drive service
         const driveService = new GoogleDriveService();
-        const uploadedFiles = [];
 
-        // Upload files to Google Drive
-        for (const file of files) {
+        // Upload files to Google Drive in parallel for better performance
+        const uploadPromises = files.map(async (file) => {
             if (file.size > 0) {
                 const buffer = Buffer.from(await file.arrayBuffer());
                 const uploadResult = await driveService.uploadFile(
@@ -93,7 +93,7 @@ export async function POST(request) {
                     submissionType  // Pass submission type to determine folder
                 );
 
-                uploadedFiles.push({
+                return {
                     originalName: file.name,
                     driveFileId: uploadResult.id,
                     driveFileUrl: uploadResult.webViewLink,
@@ -101,9 +101,14 @@ export async function POST(request) {
                     size: file.size,
                     folderId: uploadResult.folderId,
                     submissionType: uploadResult.submissionType
-                });
+                };
             }
-        }
+            return null;
+        });
+
+        // Wait for all uploads to complete
+        const uploadResults = await Promise.all(uploadPromises);
+        const uploadedFiles = uploadResults.filter(result => result !== null);
 
         // Create submission record
         const submission = new Submission({

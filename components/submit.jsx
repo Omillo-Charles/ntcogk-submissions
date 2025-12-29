@@ -170,23 +170,32 @@ export default function Submit() {
         formDataToSend.append('files', file);
       });
 
-      // Send to API
+      // Send to API with timeout for better UX
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
+
       const response = await fetch('/api/submissions', {
         method: 'POST',
         body: formDataToSend,
+        signal: controller.signal
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
 
       if (response.ok && data.success) {
         // Show success message
         setCurrentStep(4);
       } else {
-        throw new Error(data.message || 'Failed to submit');
+        throw new Error(data.error || 'Failed to submit');
       }
     } catch (error) {
       console.error("Submission error:", error);
-      alert(`Failed to submit: ${error.message}. Please try again.`);
+      if (error.name === 'AbortError') {
+        alert('Submission timed out. Please try again with smaller files or check your internet connection.');
+      } else {
+        alert(`Failed to submit: ${error.message}. Please try again.`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -242,8 +251,8 @@ export default function Submit() {
             <div key={step.num} className="flex flex-col items-center">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all mb-2 ${currentStep >= step.num
-                    ? "bg-[#1E4E9A] text-white"
-                    : "bg-gray-200 text-gray-500"
+                  ? "bg-[#1E4E9A] text-white"
+                  : "bg-gray-200 text-gray-500"
                   }`}
               >
                 {step.num}
@@ -273,6 +282,7 @@ export default function Submit() {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
+                  style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.fullName ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Enter your full name"
@@ -291,6 +301,7 @@ export default function Submit() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.email ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="your.email@example.com"
@@ -309,6 +320,7 @@ export default function Submit() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="+254 700 000 000"
@@ -326,6 +338,7 @@ export default function Submit() {
                   name="position"
                   value={formData.position}
                   onChange={handleInputChange}
+                  style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.position ? "border-red-500" : "border-gray-300"
                     }`}
                 >
@@ -690,8 +703,8 @@ export default function Submit() {
                 onClick={prevStep}
                 disabled={currentStep === 1}
                 className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all ${currentStep === 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
               >
                 Previous
@@ -714,7 +727,7 @@ export default function Submit() {
                   {isSubmitting ? (
                     <>
                       <div className="spinner w-5 h-5 border-2"></div>
-                      <span>Submitting...</span>
+                      <span>Uploading files and submitting...</span>
                     </>
                   ) : (
                     <span>Submit Documents</span>

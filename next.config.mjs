@@ -5,9 +5,13 @@ const nextConfig = {
   },
   api: {
     bodyParser: {
-      sizeLimit: '10mb',
+      sizeLimit: '50mb', // Increased from 10mb for larger file uploads
     },
+    responseLimit: '50mb',
   },
+  // Optimize for faster builds and responses
+  compress: true,
+  poweredByHeader: false,
   env: {
     MONGODB_URI: process.env.MONGODB_URI,
     GOOGLE_DRIVE_CLIENT_ID: process.env.GOOGLE_DRIVE_CLIENT_ID,
