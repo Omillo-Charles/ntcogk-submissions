@@ -13,6 +13,8 @@
 # testing
 /coverage
 
+/NTChurchOfGodExpressJSBackend
+
 # next.js
 /.next/
 /out/

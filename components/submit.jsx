@@ -33,6 +33,9 @@ export default function Submit() {
 
   // Close dropdown when clicking outside
   useEffect(() => {
+    // Explicitly reset form on mount to ensure no data persists from browser session restoration
+    resetForm();
+
     const handleClickOutside = (event) => {
       if (churchDropdownRef.current && !churchDropdownRef.current.contains(event.target)) {
         setShowChurchDropdown(false);
@@ -144,58 +147,41 @@ export default function Submit() {
     }
 
     setIsSubmitting(true);
-
     try {
-      // Create FormData for file upload
-      const formDataToSend = new FormData();
-
-      // Append user details
-      formDataToSend.append('fullName', formData.fullName);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('phone', formData.phone);
-      formDataToSend.append('position', formData.position);
-
-      // Append church details
-      formDataToSend.append('branch', formData.churchName);
-      formDataToSend.append('region', formData.region);
-
-      // Append submission details
-      formDataToSend.append('submissionType', formData.submissionType);
-      formDataToSend.append('urgency', formData.urgency);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('subject', `${formData.submissionType} - ${formData.churchName}`);
+      const apiFormData = new FormData();
+      
+      // Append all text fields
+      apiFormData.append("fullName", formData.fullName);
+      apiFormData.append("email", formData.email);
+      apiFormData.append("phone", formData.phone);
+      apiFormData.append("position", formData.position);
+      apiFormData.append("region", formData.region);
+      apiFormData.append("branch", formData.churchName); // backend expects 'branch'
+      apiFormData.append("submissionType", formData.submissionType);
+      apiFormData.append("urgency", formData.urgency);
+      apiFormData.append("description", formData.description);
 
       // Append files
       formData.files.forEach((file) => {
-        formDataToSend.append('files', file);
+        apiFormData.append("files", file);
       });
 
-      // Send to API with timeout for better UX
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
-
-      const response = await fetch('/api/submissions', {
-        method: 'POST',
-        body: formDataToSend,
-        signal: controller.signal
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submissions`, {
+        method: "POST",
+        body: apiFormData,
       });
 
-      clearTimeout(timeoutId);
-      const data = await response.json();
+      const result = await response.json();
 
-      if (response.ok && data.success) {
-        // Show success message
-        setCurrentStep(4);
-      } else {
-        throw new Error(data.error || 'Failed to submit');
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to submit");
       }
+
+      // Show success message
+      setCurrentStep(4);
     } catch (error) {
       console.error("Submission error:", error);
-      if (error.name === 'AbortError') {
-        alert('Submission timed out. Please try again with smaller files or check your internet connection.');
-      } else {
-        alert(`Failed to submit: ${error.message}. Please try again.`);
-      }
+      alert(`Failed to submit: ${error.message}. Please try again.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -267,7 +253,7 @@ export default function Submit() {
 
       {/* Form Card */}
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           {/* Step 1: User Details */}
           {currentStep === 1 && (
             <div className="space-y-6">
@@ -282,6 +268,7 @@ export default function Submit() {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.fullName ? "border-red-500" : "border-gray-300"
                     }`}
@@ -301,6 +288,7 @@ export default function Submit() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.email ? "border-red-500" : "border-gray-300"
                     }`}
@@ -320,6 +308,7 @@ export default function Submit() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   style={{ color: '#374151', backgroundColor: '#ffffff' }}
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all ${errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
@@ -553,6 +542,7 @@ export default function Submit() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
+                  autoComplete="off"
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#1E4E9A] focus:border-transparent transition-all resize-vertical ${errors.description ? "border-red-500" : "border-gray-300"
                     }`}
                   placeholder="Provide details about your submission..."
