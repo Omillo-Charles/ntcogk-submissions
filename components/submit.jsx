@@ -148,6 +148,7 @@ export default function Submit() {
 
     setIsSubmitting(true);
     try {
+      console.log("Starting submission to:", process.env.NEXT_PUBLIC_API_URL);
       const apiFormData = new FormData();
       
       // Append all text fields
@@ -162,15 +163,25 @@ export default function Submit() {
       apiFormData.append("description", formData.description);
 
       // Append files
+      let totalSize = 0;
       formData.files.forEach((file) => {
         apiFormData.append("files", file);
+        totalSize += file.size;
       });
+
+      console.log(`Total payload size: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
+      
+      if (totalSize > 4 * 1024 * 1024) {
+        alert("Warning: Total file size is over 4MB. Vercel (free tier) has a 4.5MB limit. Submission might fail.");
+      }
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submissions`, {
         method: "POST",
         body: apiFormData,
+        // No headers needed for FormData, fetch sets them automatically with boundary
       });
 
+      console.log("Response status:", response.status);
       const result = await response.json();
 
       if (!response.ok) {
@@ -225,25 +236,28 @@ export default function Submit() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
       {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex items-center justify-around">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex items-center justify-around relative">
+          {/* Progress Line */}
+          <div className="absolute top-6 left-0 w-full h-0.5 bg-gray-200 -z-10 hidden sm:block"></div>
+          
           {[
             { num: 1, label: "User Details" },
             { num: 2, label: "Church Details" },
             { num: 3, label: "Submission" },
           ].map((step) => (
-            <div key={step.num} className="flex flex-col items-center">
+            <div key={step.num} className="flex flex-col items-center relative bg-transparent px-2">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all mb-2 ${currentStep >= step.num
-                  ? "bg-[#1E4E9A] text-white"
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold text-base sm:text-lg transition-all mb-2 shadow-sm ${currentStep >= step.num
+                  ? "bg-[#1E4E9A] text-white ring-4 ring-blue-50"
                   : "bg-gray-200 text-gray-500"
                   }`}
               >
                 {step.num}
               </div>
-              <span className="text-sm text-gray-600 font-medium text-center">
+              <span className={`text-[10px] sm:text-sm font-medium text-center max-w-[80px] sm:max-w-none ${currentStep >= step.num ? "text-[#1E4E9A]" : "text-gray-500"}`}>
                 {step.label}
               </span>
             </div>
@@ -252,7 +266,7 @@ export default function Submit() {
       </div>
 
       {/* Form Card */}
-      <div className="bg-white rounded-xl shadow-lg p-8">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
         <form onSubmit={handleSubmit} autoComplete="off">
           {/* Step 1: User Details */}
           {currentStep === 1 && (
@@ -687,14 +701,14 @@ export default function Submit() {
 
           {/* Navigation Buttons */}
           {currentStep < 4 && (
-            <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={prevStep}
-                disabled={currentStep === 1}
-                className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition-all ${currentStep === 1
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                disabled={currentStep === 1 || isSubmitting}
+                className={`px-6 py-3 rounded-lg font-medium transition-colors w-full sm:w-auto ${currentStep === 1
+                  ? "invisible"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
                   }`}
               >
                 Previous
@@ -704,7 +718,7 @@ export default function Submit() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="w-full sm:w-auto bg-[#1E4E9A] hover:bg-[#163E7A] text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                  className="w-full sm:w-auto bg-[#1E4E9A] hover:bg-[#163E7A] text-white px-6 py-3 rounded-lg font-medium transition-colors order-first sm:order-last"
                 >
                   Next Step
                 </button>
@@ -712,12 +726,15 @@ export default function Submit() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto bg-[#E02020] hover:bg-[#B81C1C] text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  className="w-full sm:w-auto bg-[#E02020] hover:bg-[#B81C1C] text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 order-first sm:order-last"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="spinner w-5 h-5 border-2"></div>
-                      <span>Uploading files and submitting...</span>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Submitting...</span>
                     </>
                   ) : (
                     <span>Submit Documents</span>

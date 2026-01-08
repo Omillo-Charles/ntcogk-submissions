@@ -4,53 +4,53 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-[#1E4E9A] text-white py-16">
+      <div className="bg-[#1E4E9A] text-white py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">
               Document Submission Portal
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-2">
+            <p className="text-lg sm:text-xl md:text-2xl text-blue-100 mb-6 font-medium">
               New Testament Church of God Kenya
             </p>
-            <p className="text-lg text-white/80 max-w-2xl mx-auto">
-              Submit your documents securely and efficiently. Follow the simple steps below to complete your submission.
+            <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
+              Submit your documents securely and efficiently. Follow our simple 3-step process to complete your submission in minutes.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Info Cards */}
-      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      {/* Info Cards - Visible on all screens now but optimized */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-10 mb-8 sm:mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 text-center transform transition hover:-translate-y-1">
+            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
               <svg className="w-6 h-6 text-[#1E4E9A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Easy Process</h3>
-            <p className="text-sm text-gray-600">Simple 3-step submission process</p>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Easy Process</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">Simple 3-step submission process designed for everyone.</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 text-center transform transition hover:-translate-y-1">
+            <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-100">
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure</h3>
-            <p className="text-sm text-gray-600">Your documents are encrypted and safe</p>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Secure</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">Your documents are encrypted and stored in secure collections.</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 text-center">
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 text-center transform transition hover:-translate-y-1 sm:col-span-2 md:col-span-1">
+            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
               <svg className="w-6 h-6 text-[#E02020]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Fast</h3>
-            <p className="text-sm text-gray-600">Quick submission and confirmation</p>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Fast</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">Quick processing and immediate digital confirmation.</p>
           </div>
         </div>
       </div>
